@@ -21,6 +21,13 @@ async def get_item(item_id: int)->dict:
     else:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
 
+@app.get("/itemModel/{item_id}", response_model=ItemModel)
+async def get_item(item_id: int)->ItemModel:
+    if item_id < len(items):
+        return items[item_id]
+    else:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
