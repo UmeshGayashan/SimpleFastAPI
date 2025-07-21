@@ -1,14 +1,25 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
+from models.item import ItemModel
 
 app = FastAPI()
+
+items = []
 
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
 
+@app.post("/items/")
+async def create_item(item: ItemModel):
+    items.append(item)
+    return items
+
 @app.get("/items/{item_id}")
-async def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
+async def get_item(item_id: int)->dict:
+    if item_id < len(items):
+        return {"item1": items[item_id]}
+    else:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
 
 @app.get("/health")
 async def health_check():
